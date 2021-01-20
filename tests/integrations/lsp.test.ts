@@ -13,7 +13,7 @@ import { samplePlugin } from "./fixtures/sample-plugin";
 const projectIndex = require.resolve("../../dist/index.js");
 
 const execFileAsync = promisify(execFile);
-createDaemonContext();
+const ctx = createDaemonContext();
 
 test("report to daemon and ls-client receives", async () => {
   {
@@ -24,6 +24,7 @@ test("report to daemon and ls-client receives", async () => {
     assert(matches);
     const [pid] = matches;
     assert(pid);
+    ctx.pushPid(pid);
     const procs = await find("pid", pid);
     const [proc] = procs;
 
@@ -35,6 +36,7 @@ test("report to daemon and ls-client receives", async () => {
     env: process.env,
     stdio: ["pipe", "pipe", "ignore"],
   });
+  ctx.pushPid(lsClient.pid);
 
   const [stdin, stdout] = lsClient.stdio;
   let stdoutText = "";

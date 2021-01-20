@@ -21,17 +21,17 @@ export const isRunning = (): Promise<boolean> => {
     ipc.connectTo(daemonName, () => {
       const client = ipc.of[daemonName];
       client.on("connect", () => {
-        ipc.disconnect(daemonName);
         resolve(true);
+        ipc.disconnect(daemonName);
       });
       client.on("disconnect", () => {
-        ipc.disconnect(daemonName);
         resolve(false);
+        ipc.disconnect(daemonName);
       });
     });
     setTimeout(() => {
-      ipc.disconnect(daemonName);
       resolve(false);
+      ipc.disconnect(daemonName);
     }, 2000);
   });
 };
@@ -42,18 +42,18 @@ export const stop = (): Promise<boolean> => {
     ipc.connectTo(daemonName, () => {
       const client = ipc.of[daemonName];
       client.on("connect", () => {
+        resolve(true);
         client.emit("stop", null);
         ipc.disconnect(daemonName);
-        resolve(true);
       });
       client.on("disconnect", () => {
-        ipc.disconnect(daemonName);
         resolve(false);
+        ipc.disconnect(daemonName);
       });
     });
     setTimeout(() => {
-      ipc.disconnect(daemonName);
       resolve(false);
+      ipc.disconnect(daemonName);
     }, 2000);
   });
 };
@@ -97,8 +97,8 @@ export const getClientShortLived = (): Promise<Client | null> => {
       });
     });
     setTimeout(() => {
-      ipc.disconnect(daemonName);
       resolve(null);
+      ipc.disconnect(daemonName);
     }, 2000);
   });
 };

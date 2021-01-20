@@ -27,7 +27,9 @@ const setup = () => {
 
 const startServer = () => {
   setup();
-  const files: { [path: string]: PublishDiagnosticsParams } = {};
+  const files: { [path: string]: PublishDiagnosticsParams } = Object.create(
+    null,
+  );
   ipc.serve(() => {
     ipc.server.on("reportFiles", (data) => {
       data.forEach((file: VFileDiagnostics) => {

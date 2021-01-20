@@ -3,7 +3,7 @@
 
 declare module "@folder/xdg" {
   export interface Dirs {
-    cache: string
+    cache: string;
   }
   const xdg: () => Dirs;
   export default xdg;

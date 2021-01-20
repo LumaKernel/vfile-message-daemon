@@ -10,15 +10,13 @@
   "license": "MIT",
   "author": "Luma",
   "scripts": {
-    "fix": "npm run fix:eslint",
-    "fix:eslint": "npm run lint:eslint -- --fix",
-    "lint": "npm run lint:eslint",
-    "lint:eslint": "eslint . --ext .js,.ts,.json",
+    "build": "tsc --build ./tsconfig.build.json",
+    "fix": "npm run lint:eslint -- --fix",
+    "lint": "eslint . --ext .js,.ts,.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:integration": "npx jest ./tests/integrations --detectOpenHandles",
-    "build": "tsc --build ./tsconfig.build.json",
-    "watch": "npm run build -- --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "watch": "npm run build -- --watch"
   },
   "dependencies": {
     "@folder/xdg": "^3.1.2",
