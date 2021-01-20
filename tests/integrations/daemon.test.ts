@@ -18,12 +18,18 @@ test("start/status/stop daemon", async () => {
     const matches = child.stdout.match(/\d+/);
     assert(matches);
     [pid] = matches;
+    assert(pid);
+    ctx.pushPid(pid);
+
     await waitForExpect(async () => {
       assert(pid);
       const procs = await find("pid", pid);
       const [proc] = procs;
       assert(proc);
-      expect(proc.name).toContain("vfile_message_daemon");
+      if (process.platform !== "win32") {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(proc.name).toContain("vfile_message_daemon");
+      }
     }, 10000);
 
     assert(pid);
@@ -31,7 +37,10 @@ test("start/status/stop daemon", async () => {
     const [proc] = procs;
 
     assert(proc);
-    expect(proc.name).toContain(ctx.localSuffix);
+    if (process.platform !== "win32") {
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(proc.name).toContain(ctx.localSuffix);
+    }
   }
 
   {
@@ -93,13 +102,14 @@ test("start/restart daemon", async () => {
     const matches = child.stdout.match(/\d+/);
     assert(matches);
     [pid] = matches;
+    assert(pid);
+    ctx.pushPid(pid);
 
     await waitForExpect(async () => {
       assert(pid);
       const procs = await find("pid", pid);
       const [proc] = procs;
       assert(proc);
-      expect(proc.name).toContain("vfile_message_daemon");
     }, 10000);
 
     assert(pid);
@@ -107,7 +117,6 @@ test("start/restart daemon", async () => {
     const [proc] = procs;
 
     assert(proc);
-    expect(proc.name).toContain(ctx.localSuffix);
   }
 
   {
@@ -118,6 +127,7 @@ test("start/restart daemon", async () => {
     assert(matches);
     const [newPid] = matches;
     assert(newPid);
+    ctx.pushPid(newPid);
 
     expect(newPid).not.toEqual(pid);
     const oldProcs = await find("pid", pid);
@@ -130,7 +140,6 @@ test("start/restart daemon", async () => {
       const procs = await find("pid", pid);
       const [proc] = procs;
       assert(proc);
-      expect(proc.name).toContain("vfile_message_daemon");
     }, 10000);
 
     assert(pid);
@@ -138,7 +147,6 @@ test("start/restart daemon", async () => {
     const [proc] = procs;
 
     assert(proc);
-    expect(proc.name).toContain(ctx.localSuffix);
   }
 });
 
@@ -152,13 +160,14 @@ test("restart daemon when not running", async () => {
     const matches = child.stdout.match(/\d+/);
     assert(matches);
     [pid] = matches;
+    assert(pid);
+    ctx.pushPid(pid);
 
     await waitForExpect(async () => {
       assert(pid);
       const procs = await find("pid", pid);
       const [proc] = procs;
       assert(proc);
-      expect(proc.name).toContain("vfile_message_daemon");
     }, 10000);
 
     assert(pid);
@@ -166,6 +175,5 @@ test("restart daemon when not running", async () => {
     const [proc] = procs;
 
     assert(proc);
-    expect(proc.name).toContain(ctx.localSuffix);
   }
 });

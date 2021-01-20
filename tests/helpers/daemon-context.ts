@@ -10,15 +10,32 @@ export const globalSuffix = makeSuffix();
 
 export interface DaemonContext {
   localSuffix: string;
+  pushPid: (pid: string | number) => void;
+  pids: number[];
 }
 
 export const createDaemonContext = (): DaemonContext => {
-  const ctx: any = Object.create(null);
+  const ctx: DaemonContext = Object.create(null) as any;
   beforeEach(() => {
     const localSuffix = globalSuffix + makeSuffix();
+    const pids: number[] = [];
     process.env.TEST_VFMD_PREFIX = localSuffix;
     Object.assign(ctx, {
       localSuffix,
+      pids,
+      pushPid: (pid: string | number) => {
+        pids.push(typeof pid === "number" ? pid : parseInt(pid, 10));
+      },
+    });
+  });
+
+  afterEach(() => {
+    ctx.pids.forEach((pid) => {
+      try {
+        process.kill(pid);
+      } catch (_e: unknown) {
+        // ignore
+      }
     });
   });
 
@@ -28,7 +45,11 @@ export const createDaemonContext = (): DaemonContext => {
       `vfile_message_daemon_test_${globalSuffix}`,
     );
     procs.forEach((proc) => {
-      process.kill(proc.pid);
+      try {
+        process.kill(proc.pid);
+      } catch (_e: unknown) {
+        // ignore
+      }
     });
   });
 
