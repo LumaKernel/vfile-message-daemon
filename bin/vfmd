@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../dist/bin/debug_daemon_server');
+require('../dist/bin/index');
