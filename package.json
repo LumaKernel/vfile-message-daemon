@@ -9,6 +9,19 @@
   ],
   "license": "MIT",
   "author": "Luma",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "bin": {
+    "vfmd": "./bin/vfmd"
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/LumaKernel/vfile-message-daemon",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LumaKernel/vfile-message-daemon"
+  },
   "scripts": {
     "build": "tsc --build ./tsconfig.build.json",
     "fix": "npm run lint:eslint -- --fix",

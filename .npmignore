@@ -1,10 +1,6 @@
-.npmignore
-node_modules/
-.eslintrc.js
-.eslintignore
-.npmrc
-.prettierrc.*
-.releaserc.*
-*.md
-jest.*
-tsconfig.*
+*
+!/dist/
+!/bin/
+!/package.json
+!/README.md
+!/LICENSE
