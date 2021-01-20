@@ -32,7 +32,7 @@ test("report to daemon and ls-client receives", async () => {
     expect(proc).toBeTruthy();
   }
 
-  const lsClient = spawn("node", [mainBinary, "lsp", "--stdin"], {
+  const lsClient = spawn("node", [mainBinary, "lsp", "--stdio"], {
     env: process.env,
     stdio: ["pipe", "pipe", "ignore"],
   });

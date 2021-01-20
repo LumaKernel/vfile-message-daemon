@@ -4,7 +4,8 @@ import { startLanguageServer } from "../lsp";
 import { dump } from "../utils/debug";
 import { start } from "../daemon/manage";
 
-program.version("0.1.0", "-v, --version");
+program.version(require("../../package.json").version, "-v, --version");
+
 program.command("start").action(async () => {
   const running = await isRunning();
   if (running) {
@@ -34,7 +35,7 @@ program.command("status").action(async () => {
   const command = program.command("lsp");
   command
     .allowUnknownOption()
-    .option("--stdin", "Use stdin/stdout to communicate")
+    .option("--stdio", "Use stdin/stdout to communicate")
     .option("-e, --error", "report as errors")
     .action(() => {
       const options = command.opts();

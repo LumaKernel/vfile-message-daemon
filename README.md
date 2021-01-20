@@ -26,7 +26,7 @@ Configure following commands to your editors' LSP Client.
 ```shell
 vfmd lsp
 # You can also use stdin/stdout for communication.
-# vfmd lsp --stdin
+# vfmd lsp --stdio
 ```
 
 ### Example for vim-lsp
@@ -35,7 +35,7 @@ vfmd lsp
 if executable("vfmd")
   autocmd User lsp_setup call lsp#register_server({
     \   'name': 'vfmd-lsp',
-    \   'cmd': {server_info->['vfmd', 'lsp', '--stdin']},
+    \   'cmd': {server_info->['vfmd', 'lsp', '--stdio']},
     \   'allowlist': ['text', 'markdown', 'html'],
     \ })
 endif
