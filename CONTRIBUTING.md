@@ -1,8 +1,7 @@
 # Contributing
 
 Welcome contributing by PR and submitting Issues.
-Before submitting PR, please check whether you can agree the license or not. CLA is not passed, We would never review that PR.
-If your PR is huge (almost 10 lines or more), you can list your name/names in `LICENSE.md`. Please include your name/names by yourself/yourselves.
+Before submitting PR, please check whether you can agree the license or not.
 
 ## Prerequisite
 
