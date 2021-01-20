@@ -41,7 +41,7 @@ program.command("status").action(async () => {
     .action(() => {
       const options = command.opts();
       dump(options);
-      startLanguageServer({ stdin: options.stdin });
+      startLanguageServer({ stdio: options.stdio });
     });
 }
 dump(process.argv);

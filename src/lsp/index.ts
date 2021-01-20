@@ -21,19 +21,15 @@ import { dump } from "../utils/debug";
 interface Settings {}
 
 export interface StartLanguageServerOptions {
-  stdin: boolean;
+  stdio: boolean;
 }
 
 export const startLanguageServer = ({
-  stdin,
+  stdio,
 }: StartLanguageServerOptions): void => {
-  dump({ stdin });
+  dump({ stdio });
 
-  process.stdin.on("data", (a) => {
-    dump({ a: a.toString() });
-  });
-
-  const connection = stdin
+  const connection = stdio
     ? createConnection(process.stdin, process.stdout)
     : createConnection(
         new IPCMessageReader(process),
