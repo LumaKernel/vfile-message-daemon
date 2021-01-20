@@ -88,7 +88,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
       - if: steps.restore-cache.outputs.cache-hit != 'true'
         run: npm ci
       - uses: actions/download-artifact@v2
