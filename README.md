@@ -1,5 +1,7 @@
 # VFile Message Daemon
 
+![vfile-message-daemon-v1-0-0](https://user-images.githubusercontent.com/29811106/105132160-c3b4e400-5b2d-11eb-8630-d9b8a7232808.png)
+
 ## Usage
 
 ### LSP User
