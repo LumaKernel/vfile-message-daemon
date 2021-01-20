@@ -175,5 +175,6 @@ test("restart daemon when not running", async () => {
     const [proc] = procs;
 
     assert(proc);
+    expect(proc).toBeTruthy();
   }
 });
