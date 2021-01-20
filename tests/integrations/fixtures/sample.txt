@@ -1,0 +1,2 @@
+An ERROR occurs.
+This is annotated as WARN.

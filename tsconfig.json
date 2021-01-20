@@ -1,6 +1,6 @@
 {
   "include": [
-    "src/**/*.ts"
+    "**/*.ts"
   ],
   "exclude": [
     "node_modules"
@@ -9,8 +9,8 @@
     "allowJs": true,
     "isolatedModules": false,
     "module": "CommonJS",
-    "outDir": "dist",
     "target": "es2015",
+    "noEmit": true,
     "strict": true,
     "declaration": true,
     "esModuleInterop": true,

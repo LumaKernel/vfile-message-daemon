@@ -4,3 +4,4 @@ out/
 *.log
 yarn.lock
 package-lock.json
+*.tgz
