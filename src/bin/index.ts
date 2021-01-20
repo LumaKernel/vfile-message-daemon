@@ -4,6 +4,7 @@ import { startLanguageServer } from "../lsp";
 import { dump } from "../utils/debug";
 import { start } from "../daemon/manage";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- package.json
 program.version(require("../../package.json").version, "-v, --version");
 
 program.command("start").action(async () => {
