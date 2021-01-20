@@ -85,3 +85,14 @@ jobs:
           name: built
           path: dist
       - run: npm run test:integration
+  trigger-release:
+    runs-on: ubuntu-latest
+    needs:
+      - integration-test-ubuntu
+      - integration-test-macos
+      - integration-test-windows
+    if: ${{ github.ref == 'refs/heads/master' }}
+    steps:
+      - uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Release
