@@ -18,6 +18,7 @@ If your PR is huge (almost 10 lines or more), you can list your name/names in `L
   - Easy to debug rather than `... start`.
 - `ps aux | grep vfile_message_daemon` to check processes.
 - `watch 'ps aux | grep vfile_message_daemon'` to monitor processes.
+- `npx ts-node ./scripts/kill_test_procs.ts` to kill remained processes by failed test running.
 
 ## Rules
 
