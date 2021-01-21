@@ -19,6 +19,8 @@ vfmd restart
 
 Daemon should be running beforehand.
 
+You can also use `vfmd start --attach` or `vfmd restart --attach` not to spawn detached process.
+
 ### LSP Settings
 
 Configure following commands to your editors' LSP Client.
@@ -69,10 +71,10 @@ const processor = unified()
   .use(remark2rehype)
   .use(html);
 
-processor.process(vfile.readSync(fname), (err, file) => {
+processor.process(vfile.readSync(fname), async (err, file) => {
   if (err) throw err;
   console.error(report(file));
-  reportToDaemon(file);
+  await reportToDaemon(file);
   file.extname = ".html";
   vfile.writeSync(file);
 });
