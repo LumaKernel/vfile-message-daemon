@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/LumaKernel/vfile-message-daemon/compare/v1.0.4...v1.1.0) (2021-01-21)
+
+
+### Features
+
+* attach mode ([978fd29](https://github.com/LumaKernel/vfile-message-daemon/commit/978fd296d43de167e656bb292f173df857595313))
+
 ## [1.0.4](https://github.com/LumaKernel/vfile-message-daemon/compare/v1.0.3...v1.0.4) (2021-01-20)
 
 
