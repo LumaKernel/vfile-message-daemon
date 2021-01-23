@@ -3,6 +3,7 @@
 [![](https://img.shields.io/github/workflow/status/LumaKernel/vfile-message-daemon/Test?label=ci&style=flat-square)](https://github.com/LumaKernel/vfile-message-daemon/actions?query=workflow%3ATest)
 [![](https://img.shields.io/github/workflow/status/LumaKernel/vfile-message-daemon/Release?label=release&style=flat-square)](https://github.com/LumaKernel/vfile-message-daemon/actions?query=workflow%3ARelease)
 [![](https://img.shields.io/npm/v/vfmd?style=flat-square)](https://www.npmjs.com/package/vfmd)
+[![](https://img.shields.io/codecov/c/github/LumaKernel/vfile-message-daemon?style=flat-square)]()
 
 ![vfile-message-daemon-v1-0-0](https://user-images.githubusercontent.com/29811106/105132160-c3b4e400-5b2d-11eb-8630-d9b8a7232808.png)
 
