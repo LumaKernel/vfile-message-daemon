@@ -73,8 +73,8 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
       - run: npm ci
-      - run: npm run coverage:integration
-      - uses: codecov/codecov-action@v1
+      # NOTE: Cannot run with nyc in Windows.
+      - run: npm run test:integration
   trigger-release:
     name: Trigger release workflow
     runs-on: ubuntu-latest
