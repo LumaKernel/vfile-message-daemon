@@ -1,6 +1,8 @@
 node_modules/
 dist/
 out/
+coverage/
+.nyc_output/
 *.log
 yarn.lock
 *.tgz

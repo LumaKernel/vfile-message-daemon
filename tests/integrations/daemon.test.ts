@@ -8,6 +8,7 @@ import { createDaemonContext, mainBinary } from "../helpers/daemon-context";
 const ctx = createDaemonContext();
 
 const execFileAsync = promisify(execFile);
+
 test("start/status/stop daemon", async () => {
   let pid: string | undefined | null = null;
 

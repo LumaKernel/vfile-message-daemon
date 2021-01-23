@@ -1,6 +1,6 @@
 {
   "name": "vfmd",
-  "version": "1.1.0",
+  "version": "1.0.3",
   "description": "VFile message daemon and LSP Server",
   "keywords": [
     "lsp",
@@ -25,12 +25,17 @@
   ],
   "scripts": {
     "build": "tsc --build ./tsconfig.build.json",
+    "coverage:integration": "nyc --reporter html npm run test:integration",
     "fix": "npm run lint -- --fix",
     "lint": "eslint . --ext .js,.ts,.json",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:integration": "npx jest ./tests/integrations --detectOpenHandles",
+    "pretest:integration": "npm run build",
+    "test:integration": "jest ./tests/integrations --detectOpenHandles",
     "typecheck": "tsc --noEmit",
     "watch": "npm run build -- --watch"
+  },
+  "nyc": {
+    "all": true
   },
   "dependencies": {
     "@folder/xdg": "^3.1.2",
@@ -73,6 +78,7 @@
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
     "npm-run-all": "^4.1.5",
+    "nyc": "^15.1.0",
     "prettier": "^2.2.1",
     "rehype": "^11.0.0",
     "retext": "^7.0.1",
