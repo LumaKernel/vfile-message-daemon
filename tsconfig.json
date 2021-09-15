@@ -8,7 +8,7 @@
   "compilerOptions": {
     "allowJs": true,
     "isolatedModules": false,
-    "module": "CommonJS",
+    "module": "es2020",
     "target": "es2015",
     "noEmit": true,
     "strict": true,

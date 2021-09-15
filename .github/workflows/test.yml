@@ -1,80 +1,153 @@
 name: Test
-on: push
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "README.md"
+      - "LICENSE"
+      - ".github/workflows/commitlint.yml"
+      - ".husky/"
+      - "commitlint.config.cjs"
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - "README.md"
+      - "LICENSE"
+      - ".github/workflows/commitlint.yml"
+      - ".husky/"
+      - "commitlint.config.cjs"
 
 jobs:
-  build:
-    name: Build with Node.js 14
-    runs-on: ubuntu-latest
+  cache-pnpm:
+    name: Cache Pnpm on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
       - uses: actions/cache@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-  integration-test-ubuntu:
-    needs: [build]
-    name: Integration test Node.js ${{ matrix.node-version }} on Ubuntu
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --prefer-offline]
+  build:
+    name: Build and run unit tests on ${{ matrix.os }} with Node ${{ matrix.node }}
+    needs: cache-pnpm
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['10', '12', '14']
+        os: [ubuntu-latest]
+        node: [12, 14, 16]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node: ${{ matrix.node }}
       - uses: actions/cache@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
-      - run: npm ci
-      - run: npm run coverage:integration
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --prefer-offline]
+      - run: pnpm run lint
+      - run: pnpm test
+  integration-test-ubuntu:
+    needs: build
+    name: Integration test on ${{ matrix.os }} with Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [12, 14, 16]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node: ${{ matrix.node }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --prefer-offline]
+      - run: pnpm run build
+      - run: pnpm run coverage:integration
       - uses: codecov/codecov-action@v1
   integration-test-macos:
-    needs: [build]
-    name: Integration test Node.js 14 on macOS
+    needs: build
+    name: Integration test on ${{ matrix.os }} with Node ${{ matrix.node }}
     runs-on: macos-latest
+    strategy:
+      matrix:
+        node: [14]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node: ${{ matrix.node }}
       - uses: actions/cache@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
-      - run: npm ci
-      - run: npm run coverage:integration
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --prefer-offline]
+      - run: pnpm run build
+      - run: pnpm run coverage:integration
       - uses: codecov/codecov-action@v1
   integration-test-windows:
-    needs: [build]
-    name: Integration test Node.js 14 on Windows
+    needs: build
+    name: Integration test on ${{ matrix.os }} with Node ${{ matrix.node }}
     runs-on: windows-latest
+    strategy:
+      matrix:
+        node: [14]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: 14
-      - id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
+          node: ${{ matrix.node }}
       - uses: actions/cache@v2
         with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
-      - run: npm ci
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --prefer-offline]
+      - run: pnpm run build
       # NOTE: Cannot run with nyc in Windows.
-      - run: npm run test:integration
+      - run: pnpm run test:integration
   trigger-release:
     name: Trigger release workflow
     runs-on: ubuntu-latest
@@ -82,7 +155,7 @@ jobs:
       - integration-test-ubuntu
       - integration-test-macos
       - integration-test-windows
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.event_name == 'push' && github.event.ref == 'refs/heads/master' }}
     steps:
       - uses: benc-uk/workflow-dispatch@v1
         with:

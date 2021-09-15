@@ -1,6 +1,6 @@
-import ipc from "node-ipc";
-import { dump } from "../utils/debug";
-import { debug, daemonName } from "./const";
+import ipc from 'node-ipc';
+import { dump } from '../utils/debug.js';
+import { debug, daemonName } from './const.js';
 
 const setup = (): void => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -20,11 +20,11 @@ export const isRunning = (): Promise<boolean> => {
   return new Promise((resolve) => {
     ipc.connectTo(daemonName, () => {
       const client = ipc.of[daemonName];
-      client.on("connect", () => {
+      client.on('connect', () => {
         resolve(true);
         ipc.disconnect(daemonName);
       });
-      client.on("disconnect", () => {
+      client.on('disconnect', () => {
         resolve(false);
         ipc.disconnect(daemonName);
       });
@@ -41,12 +41,12 @@ export const stop = (): Promise<boolean> => {
   return new Promise((resolve) => {
     ipc.connectTo(daemonName, () => {
       const client = ipc.of[daemonName];
-      client.on("connect", () => {
+      client.on('connect', () => {
         resolve(true);
-        client.emit("stop", null);
+        client.emit('stop', null);
         ipc.disconnect(daemonName);
       });
-      client.on("disconnect", () => {
+      client.on('disconnect', () => {
         resolve(false);
         ipc.disconnect(daemonName);
       });
@@ -70,7 +70,8 @@ export const getClient = (): Promise<Client> => {
     ipc.connectTo(daemonName, () => {
       const client = ipc.of[daemonName];
       resolve({
-        ...client,
+        emit: client.emit.bind(client),
+        on: client.on.bind(client),
         disconnect: () => {
           ipc.disconnect(daemonName);
         },
@@ -84,15 +85,16 @@ export const getClientShortLived = (): Promise<Client | null> => {
   return new Promise((resolve) => {
     ipc.connectTo(daemonName, () => {
       const client = ipc.of[daemonName];
-      client.on("connect", () => {
+      client.on('connect', () => {
         resolve({
-          ...client,
+          emit: client.emit.bind(client),
+          on: client.on.bind(client),
           disconnect: () => {
             ipc.disconnect(daemonName);
           },
         });
       });
-      client.on("disconnect", () => {
+      client.on('disconnect', () => {
         resolve(null);
       });
     });

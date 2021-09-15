@@ -1,23 +1,24 @@
-import { program } from "commander";
-import { isRunning, stop } from "../daemon/client";
-import { startLanguageServer } from "../lsp";
-import { dump } from "../utils/debug";
-import { start } from "../daemon/manage";
+/* eslint-disable no-console */
+import { program } from 'commander';
+import { isRunning, stop } from '../daemon/client.js';
+import { startLanguageServer } from '../lsp/index.js';
+import { dump } from '../utils/debug.js';
+import { start } from '../daemon/manage.js';
+import manifest from '../../package.json';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires -- package.json
-program.version(require("../../package.json").version, "-v, --version");
+program.version(manifest.version, '-v, --version');
 
 {
-  const command = program.command("start");
-  command.option("-a, --attach", "Not to detach").action(async () => {
+  const command = program.command('start');
+  command.option('-a, --attach', 'Not to detach').action(async () => {
     const { attach } = command.opts();
     const running = await isRunning();
     if (running) {
-      console.info("already running");
+      console.info('already running');
       return;
     }
     if (attach) {
-      require("../daemon/server");
+      await import('../daemon/server.js');
     } else {
       const pid = start();
       console.info(`Server is started with pid ${pid}`);
@@ -25,18 +26,18 @@ program.version(require("../../package.json").version, "-v, --version");
     }
   });
 }
-program.command("stop").action(async () => {
+program.command('stop').action(async () => {
   const stopped = await stop();
-  console.info(`${stopped ? "stopped" : "already stopped"}`);
+  console.info(`${stopped ? 'stopped' : 'already stopped'}`);
   process.exit(0);
 });
 {
-  const command = program.command("restart");
-  command.option("-a, --attach", "Not to detach").action(async () => {
+  const command = program.command('restart');
+  command.option('-a, --attach', 'Not to detach').action(async () => {
     const { attach } = command.opts();
     await stop();
     if (attach) {
-      require("../daemon/server");
+      await import('../daemon/server.js');
     } else {
       const pid = start();
       console.info(`Server is restarted with pid ${pid}`);
@@ -44,21 +45,27 @@ program.command("stop").action(async () => {
     }
   });
 }
-program.command("status").action(async () => {
-  console.info(`${(await isRunning()) ? "running" : "not running"}`);
+program.command('status').action(async () => {
+  console.info(`${(await isRunning()) ? 'running' : 'not running'}`);
   process.exit(0);
 });
 {
-  const command = program.command("lsp");
+  const command = program.command('lsp');
   command
     .allowUnknownOption()
-    .option("--stdio", "Use stdin/stdout to communicate")
+    .option('--stdio', 'Use stdin/stdout to communicate')
     .action(() => {
       const options = command.opts();
       dump(options);
-      startLanguageServer({ stdio: options.stdio });
+      try {
+        startLanguageServer({ stdio: options.stdio });
+      } catch (e: unknown) {
+        dump({ mes: 'error on creation LSP Client', e });
+        throw e;
+      }
     });
 }
 dump(process.argv);
 
 program.parse(process.argv);
+/* eslint-enable no-console */

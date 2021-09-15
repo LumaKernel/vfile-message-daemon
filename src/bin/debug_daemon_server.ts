@@ -1,1 +1,1 @@
-require("../daemon/server");
+import '../daemon/server.js';

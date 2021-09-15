@@ -1,10 +1,9 @@
-import ipc from "node-ipc";
-import type { PublishDiagnosticsParams } from "vscode-languageserver";
-import {
-  VFileDiagnostics,
-  VFileToLSPDiagnostics,
-} from "../utils/vfile-to-lsp-diagnositcs";
-import { debug, daemonName } from "./const";
+import ipc from 'node-ipc';
+import type { PublishDiagnosticsParams } from 'vscode-languageserver';
+import type { VFileDiagnostics } from '../utils/vfile-to-lsp-diagnositcs.js';
+import { VFileToLSPDiagnostics } from '../utils/vfile-to-lsp-diagnositcs.js';
+import { debug, daemonName } from './const.js';
+import { dump } from '../utils/debug.js';
 
 const entries = <T>(
   obj: T,
@@ -27,24 +26,24 @@ const setup = () => {
 
 const startServer = () => {
   setup();
-  const files: { [path: string]: PublishDiagnosticsParams } = Object.create(
-    null,
-  );
+  const files: { [path: string]: PublishDiagnosticsParams } = Object.create(null);
   ipc.serve(() => {
-    ipc.server.on("reportFiles", (data) => {
+    ipc.server.on('reportFiles', (data) => {
+      dump('server: reportFiles: received');
       data.forEach((file: VFileDiagnostics) => {
         files[file.path] = VFileToLSPDiagnostics(file);
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- https://github.com/RIAEvangelist/node-ipc/issues/172
-      (ipc.server as any).broadcast("notifyFiles", data);
+      dump('server: reportFiles: broadcasting "notifyFiles"...');
+      ipc.server.broadcast('notifyFiles', data);
     });
-    ipc.server.on("getAllFiles", (_data, socket) => {
-      ipc.server.emit(socket, "notifyFiles", entries(files));
+    ipc.server.on('getAllFiles', (_data, socket) => {
+      dump('server: getAllFiles: replying "notifyFiles"...');
+      ipc.server.emit(socket, 'notifyFiles', entries(files));
     });
-    ipc.server.on("stop", () => {
+    ipc.server.on('stop', () => {
       process.exit(0);
     });
-    ipc.server.on("socket.disconnected", (_socket, destroyedSocketID) => {
+    ipc.server.on('socket.disconnected', (_socket, destroyedSocketID) => {
       ipc.log(`client ${destroyedSocketID} has disconnected!`);
     });
   });

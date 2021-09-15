@@ -4,5 +4,4 @@ out/
 coverage/
 .nyc_output/
 *.log
-yarn.lock
 *.tgz

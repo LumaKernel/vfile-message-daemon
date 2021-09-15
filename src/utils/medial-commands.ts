@@ -1,8 +1,4 @@
-export type CreateMedialCommandDescriptor<
-  Name extends string,
-  Input = null,
-  Output = null
-> = {
+export type CreateMedialCommandDescriptor<Name extends string, Input = null, Output = null> = {
   name: Name;
   input: Input;
   callback: (output: Output) => void;

@@ -1,21 +1,12 @@
-import {
-  TextDocuments,
-  InitializeParams,
-  DidChangeConfigurationNotification,
-  TextDocumentSyncKind,
-  InitializeResult,
-  PublishDiagnosticsParams,
-} from "vscode-languageserver";
+import type { InitializeParams, InitializeResult, PublishDiagnosticsParams } from 'vscode-languageserver';
+import { TextDocuments, DidChangeConfigurationNotification, TextDocumentSyncKind } from 'vscode-languageserver';
 
-import {
-  IPCMessageReader,
-  IPCMessageWriter,
-  createConnection,
-} from "vscode-languageserver/node";
+import { IPCMessageReader, IPCMessageWriter, createConnection } from 'vscode-languageserver/node.js';
 
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { Client, getClient } from "../daemon/client";
-import { dump } from "../utils/debug";
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import type { Client } from '../daemon/client.js';
+import { getClient } from '../daemon/client.js';
+import { dump } from '../utils/debug.js';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Settings {}
@@ -24,22 +15,15 @@ export interface StartLanguageServerOptions {
   stdio: boolean;
 }
 
-export const startLanguageServer = ({
-  stdio,
-}: StartLanguageServerOptions): void => {
-  dump({ stdio });
+export const startLanguageServer = ({ stdio }: StartLanguageServerOptions): void => {
+  dump({ stdio, createConnection });
 
   const connection = stdio
     ? createConnection(process.stdin, process.stdout)
-    : createConnection(
-        new IPCMessageReader(process),
-        new IPCMessageWriter(process),
-      );
+    : createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 
   // Create a simple text document manager.
-  const documents: TextDocuments<TextDocument> = new TextDocuments(
-    TextDocument,
-  );
+  const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
   const defaultSettings: Settings = {};
   let globalSettings: Settings = defaultSettings;
@@ -62,7 +46,7 @@ export const startLanguageServer = ({
     if (!result) {
       result = connection.workspace.getConfiguration({
         scopeUri: resource,
-        section: "languageServerExample",
+        section: 'languageServerExample',
       });
       documentSettings.set(resource, result);
     }
@@ -71,31 +55,26 @@ export const startLanguageServer = ({
   void getDocumentSettings;
 
   let daemonClient: Client | null = null;
+  dump('client: getting client...');
   void getClient().then((daemonClient0) => {
+    dump('client: ready');
     daemonClient = daemonClient0;
-    daemonClient.on<PublishDiagnosticsParams[]>(
-      "notifyFiles",
-      (diagnosticsList) => {
-        dump("client: notifyFiles");
-        dump(diagnosticsList);
-        diagnosticsList.forEach((diagnostics) => {
-          connection.sendDiagnostics(diagnostics);
-        });
-      },
-    );
-    daemonClient.emit("getAllFiles", null);
+    daemonClient.on<PublishDiagnosticsParams[]>('notifyFiles', (diagnosticsList) => {
+      dump('client: notifyFiles received');
+      dump(diagnosticsList);
+      diagnosticsList.forEach((diagnostics) => {
+        connection.sendDiagnostics(diagnostics);
+      });
+    });
+    daemonClient.emit('getAllFiles', null);
   });
 
   connection.onInitialize((params: InitializeParams) => {
-    dump("onInitialize");
+    dump('onInitialize');
     const { capabilities } = params;
 
-    hasConfigurationCapability = !!(
-      capabilities.workspace && !!capabilities.workspace.configuration
-    );
-    hasWorkspaceFolderCapability = !!(
-      capabilities.workspace && !!capabilities.workspace.workspaceFolders
-    );
+    hasConfigurationCapability = !!(capabilities.workspace && !!capabilities.workspace.configuration);
+    hasWorkspaceFolderCapability = !!(capabilities.workspace && !!capabilities.workspace.workspaceFolders);
     hasDiagnosticRelatedInformationCapability = !!(
       capabilities.textDocument &&
       capabilities.textDocument.publishDiagnostics &&
@@ -122,53 +101,49 @@ export const startLanguageServer = ({
   });
 
   connection.onInitialized(() => {
-    dump("onInitialized");
+    dump('onInitialized');
     if (hasConfigurationCapability) {
-      void connection.client.register(
-        DidChangeConfigurationNotification.type,
-        undefined,
-      );
+      void connection.client.register(DidChangeConfigurationNotification.type, undefined);
     }
     if (hasWorkspaceFolderCapability) {
       connection.workspace.onDidChangeWorkspaceFolders((_event) => {
-        connection.console.log("Workspace folder change event received.");
+        connection.console.log('Workspace folder change event received.');
       });
     }
   });
 
   // The example settings
   connection.onDidChangeConfiguration((change) => {
-    dump("onDidChangeConfiguration");
+    dump('onDidChangeConfiguration');
     if (hasConfigurationCapability) {
       documentSettings.clear();
     } else {
-      globalSettings = <Settings>(
-        (change.settings.languageServerExample || defaultSettings)
-      );
+      globalSettings = <Settings>(change.settings.languageServerExample || defaultSettings);
     }
   });
 
   documents.onDidClose((e) => {
-    dump("onDidClose");
+    dump('onDidClose');
     dump(e.document.uri);
     documentSettings.delete(e.document.uri);
   });
 
   documents.onDidChangeContent((_change) => {
-    dump("onDidChangeContent");
-    daemonClient?.emit("getAllFiles", null);
+    dump('onDidChangeContent');
+    daemonClient?.emit('getAllFiles', null);
   });
 
   connection.onDidChangeWatchedFiles((_change) => {
-    dump("onDidChangeWatchedFiles");
-    connection.console.log("We received a file change event");
-    daemonClient?.emit("getAllFiles", null);
+    dump('onDidChangeWatchedFiles');
+    connection.console.log('We received a file change event');
+    daemonClient?.emit('getAllFiles', null);
   });
 
   documents.listen(connection);
   connection.listen();
 
-  process.on("exit", () => {
+  process.on('exit', () => {
+    dump('client: exit');
     daemonClient?.disconnect();
   });
 };

@@ -1,22 +1,21 @@
-import type { VFile } from "vfile";
-import { getClientShortLived } from "./daemon/client";
+import type { VFile } from 'vfile';
+import { getClientShortLived } from './daemon/client.js';
 
-export const reportToDaemon = async (
-  files: VFile | VFile[],
-): Promise<boolean> => {
+// eslint-disable-next-line import/prefer-default-export
+export const reportToDaemon = async (files: VFile | VFile[]): Promise<boolean> => {
   if (!Array.isArray(files)) return reportToDaemon([files]);
 
   const client = await getClientShortLived();
   if (client === null) return false;
 
-  const diagnositcs = files
+  const diagnostics = files
     .filter((file) => file.path)
     .map((file) => ({
       path: file.path,
       messages: file.messages,
     }));
 
-  client.emit("reportFiles", diagnositcs);
+  client.emit('reportFiles', diagnostics);
 
   client.disconnect();
 

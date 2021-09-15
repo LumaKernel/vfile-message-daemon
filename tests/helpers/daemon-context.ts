@@ -1,11 +1,12 @@
-import path from "path";
-import find from "find-process";
+import * as path from 'path';
+import * as url from 'url';
+import find from 'find-process';
 
 const makeSuffix = (): string => {
   return Math.random().toString().slice(2, 7);
 };
 
-export const mainBinary = path.resolve(__dirname, "../../dist/bin/index.js");
+export const mainBinary = path.resolve(url.fileURLToPath(import.meta.url), '../../../bin/vfmd.js');
 export const globalSuffix = makeSuffix();
 
 export interface DaemonContext {
@@ -24,7 +25,7 @@ export const createDaemonContext = (): DaemonContext => {
       localSuffix,
       pids,
       pushPid: (pid: string | number) => {
-        pids.push(typeof pid === "number" ? pid : parseInt(pid, 10));
+        pids.push(typeof pid === 'number' ? pid : parseInt(pid, 10));
       },
     });
   });
@@ -40,10 +41,7 @@ export const createDaemonContext = (): DaemonContext => {
   });
 
   afterAll(async () => {
-    const procs = await find(
-      "name",
-      `vfile_message_daemon_test_${globalSuffix}`,
-    );
+    const procs = await find('name', `vfile_message_daemon_test_${globalSuffix}`);
     procs.forEach((proc) => {
       try {
         process.kill(proc.pid);
