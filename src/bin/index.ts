@@ -1,12 +1,23 @@
 /* eslint-disable no-console */
 import { program } from 'commander';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as url from 'url';
 import { isRunning, stop } from '../daemon/client.js';
 import { startLanguageServer } from '../lsp/index.js';
 import { dump } from '../utils/debug.js';
 import { start } from '../daemon/manage.js';
-import manifest from '../../package.json';
 
-program.version(manifest.version, '-v, --version');
+/* eslint-disable @typescript-eslint/no-explicit-any */
+program.version(
+  (
+    JSON.parse(
+      fs.readFileSync(path.resolve(url.fileURLToPath(import.meta.url), '../../../package.json')).toString(),
+    ) as any
+  ).version,
+  '-v, --version',
+);
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 {
   const command = program.command('start');

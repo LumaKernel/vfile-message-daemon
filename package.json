@@ -16,8 +16,8 @@
   "license": "MIT",
   "author": "Luma",
   "type": "module",
-  "main": "./dist/src/index.js",
-  "typings": "./dist/src/index.d.ts",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "bin": {
     "vfmd": "./bin/vfmd.js"
   },

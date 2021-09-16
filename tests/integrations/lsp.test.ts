@@ -44,7 +44,6 @@ test('report to daemon and ls-client receives', async () => {
   let stdoutText = '';
   stdout.on('data', (data) => {
     stdoutText += data.toString();
-    console.log({ stdoutText });
   });
 
   const sampleFile = vfile.readSync(path.resolve(url.fileURLToPath(import.meta.url), '../fixtures/sample.txt'));
@@ -84,7 +83,7 @@ test('report to daemon and ls-client receives', async () => {
     .use(samplePlugin)
     .process(sampleFile, (_err: any, file: VFile) => {
       void (async () => {
-        const { reportToDaemon } = await import('../../dist/src/index.js');
+        const { reportToDaemon } = await import('../../dist/index.js');
         await reportToDaemon(file);
       })();
     });
