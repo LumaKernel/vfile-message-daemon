@@ -84,7 +84,7 @@ test('report to daemon and ls-client receives', async () => {
     .use(samplePlugin)
     .process(sampleFile, (_err: any, file: VFile) => {
       void (async () => {
-        const { reportToDaemon } = await import('../../dist/index.js');
+        const { reportToDaemon } = await import('../../dist/src/index.js');
         await reportToDaemon(file);
       })();
     });
