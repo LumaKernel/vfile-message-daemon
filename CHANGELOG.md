@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/LumaKernel/vfile-message-daemon/compare/v1.1.0...v1.1.1) (2021-09-16)
+
+
+### Bug Fixes
+
+* not include package.json ([9a12619](https://github.com/LumaKernel/vfile-message-daemon/commit/9a12619b8021eb3db678cdbb7e783f227d300b67))
+* rebuild ([b30f26c](https://github.com/LumaKernel/vfile-message-daemon/commit/b30f26c3823f4bdc54bec69d04ff6ffc6c3a8d51))
+
 # [1.1.0](https://github.com/LumaKernel/vfile-message-daemon/compare/v1.0.4...v1.1.0) (2021-01-21)
 
 

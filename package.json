@@ -1,6 +1,6 @@
 {
   "name": "vfmd",
-  "version": "1.0.3",
+  "version": "1.1.1",
   "description": "VFile message daemon and LSP Server",
   "keywords": [
     "lsp",
